@@ -1,0 +1,5 @@
+\+?[78][-( ]?\d{3}\)?[- ]?\d{3}[- ]?\d{2}[- ]?\d{2} : "PHONE_NUMBER" 
+\b(?:\d{4}[- ]?){3}\d{4}\b : "BANK_CARD_NUMBER"
+\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b : "EMAIL"
+(?:t\.me|telegram\.me)/[a-zA-Z0-9_]+ : "TELEGRAM"
+vk\.com/[a-zA-Z0-9_]+ : "VK"

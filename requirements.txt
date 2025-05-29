@@ -1,0 +1,6 @@
+fastapi==0.115.11
+fastapi-cli==0.0.7
+pydantic==2.10.6
+pydantic_core==2.27.2
+navec==0.10.0
+slovnet==0.6.0
