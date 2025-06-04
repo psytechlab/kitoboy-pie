@@ -14,16 +14,37 @@ app.state.ie_list = [
 
 @app.get("/v2")
 def get_version():
+    """
+    Get API version information.
+    
+    Returns:
+        dict: Dictionary containing API name, version and extensions
+    """
     return {"name": "triton-like", "version": "1.0.0", "extensions": []}
 
 
 @app.get("/v2/health/ready")
 def ready():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Response: 200 OK response indicating service is ready
+    """
     return Response(status_code=200)
 
 
 @app.post("/v2/models/pie/infer")
 def infer(inputs: TritonRequest):
+    """
+    Perform inference on input data using multiple information extraction models.
+    
+    Args:
+        inputs (TritonRequest): Request object containing batch of input texts
+        
+    Returns:
+        TritonResponse: Response object containing combined predictions for each input
+    """
     request_batched = [x.data for x in inputs.inputs]
     margin_predicts = []
     for ie in app.state.ie_list:
@@ -37,6 +58,17 @@ def infer(inputs: TritonRequest):
 
 @app.get("/v2/models/pie/config")
 def config():
+    """
+    Get model configuration.
+    
+    Returns:
+        dict: Dictionary containing model configuration parameters including:
+            - name
+            - platform 
+            - backend
+            - version policy
+            - max batch size
+    """
     return {
         "name": "pie",
         "platform": "custom",
