@@ -50,7 +50,7 @@ $ docker run -p5900:5900 kitoboy-pie:v1
 Подразумевая, что сервер запущен командой в точности из раздела "Запуск сервера", тестовый запрос выглядит так: 
 
 ```bash
-$ curl -X POST http://localhost:8001/v2/models/pie/infer -H "Content-Type: application/json" -d '{"inputs":[{"name":"text_input","shape":[3,1],"datatype":"BYTES","data":["+79099444970", "скиньте деньги на поесть 1111 1111 1111 1111 имя Никита", "помогите мне"]}]}'
+$ curl -X POST http://localhost:5900/v2/models/pie/infer -H "Content-Type: application/json" -d '{"inputs":[{"name":"text_input","shape":[3,1],"datatype":"BYTES","data":["+79099444970", "скиньте деньги на поесть 1111 1111 1111 1111 имя Никита", "помогите мне"]}]}'
 ```
 
 # Как добавить обработчик данных
