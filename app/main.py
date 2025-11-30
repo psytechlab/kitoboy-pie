@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.responses import Response
-from app.src import NavecIE, RegexIE
+from app.information_extractor import NavecIE, RegexIE
 from app.utils import format_combined
 from app.models import TritonRequest, OutputObject, TritonResponse
 
