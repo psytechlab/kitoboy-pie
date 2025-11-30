@@ -4,3 +4,5 @@ pydantic==2.10.6
 pydantic_core==2.27.2
 navec==0.10.0
 slovnet==0.6.0
+pytest==9.0.1
+httpx==0.28.1
