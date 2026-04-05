@@ -1,0 +1,239 @@
+# ============================================
+# Gaming Platforms
+# ============================================
+
+# ============================================
+# STEAM
+# ============================================
+STEAM:
+  description: |
+    Steam — gaming platform
+    
+    Форматы профиля:
+    
+    1. Кастомный URL (Custom ID):
+       - steamcommunity.com/id/username
+       - https://steamcommunity.com/id/username
+       - Длина: 2-32 символа, латиница/цифры/_- 
+       
+    2. Числовой ID (SteamID64) — самый надёжный:
+       - steamcommunity.com/profiles/76561197960435530
+       - https://steamcommunity.com/profiles/7656119XXXXXXXXX
+       - Всегда 17 цифр, начинается с 7656119
+    
+    3. Короткие ссылки (s.team):
+       - s.team/p/username
+
+  patterns:
+    # Кастомный URL (с ограничением длины и границей слова)
+    - '(?:https?://)?steamcommunity\.com/id/[a-zA-Z0-9_-]{2,32}\b'
+
+    # Числовой ID Steam64 (17 цифр, начинается с 7656119)
+    - '(?:https?://)?steamcommunity\.com/profiles/7656119\d{10}'
+
+    # Короткие ссылки s.team
+    - '(?:https?://)?s\.team/p/[a-zA-Z0-9_-]+'
+
+  context:
+    - 'steam'
+    - 'стим'
+    - 's.team'
+
+
+# ============================================
+# EPIC GAMES (ТОЛЬКО ССЫЛКИ НА ПРОФИЛЬ)
+# ============================================
+EPIC_GAMES:
+  description: |
+    Epic Games — gaming platform
+    
+    Форматы:
+    - epicgames.com/account/username
+    - epicgames.com/profile/username
+    - epicgames.com/id/username
+    - epicgames.com/u/username
+    - https://... и www. варианты
+    
+    Display Name (отображаемое имя пользователя) не ловим, тк имеет слишком общий вид
+
+  patterns:
+    # Универсальный паттерн для всех типов официальных ссылок
+    - '(?:https?://)?(?:www\.)?epicgames\.com/(?:account|profile|id|u)/[a-zA-Z0-9][a-zA-Z0-9._,-]{1,14}[a-zA-Z0-9]\b'
+
+  context:
+    - 'epic games'
+    - 'эпик геймс'
+    - 'epicgames'
+    - 'эпикгеймс'
+
+# ============================================
+# BATTLE.NET (BATTLETAG)
+# ============================================
+BATTLETAG:
+  description: |
+    BattleTag — публичный идентификатор в экосистеме Blizzard (Battle.net).
+
+    Формат:
+    - Имя#Код, например: FallenSlayer#3592
+    - Имя: 3-12 символов (латиница, кириллица, цифры, нельзя начинать с цифры)
+    - Код: 4-5 цифр после символа '#'
+    - Ссылки на профили Overwatch: overwatch.blizzard.com/en-us/career/имя-код/
+    - Ник имеет слишком общий паттерн, потому не ловим
+  patterns:
+    # Полный BattleTag (латиница + кириллица) — уникальный формат
+    - '\b[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9]{2,11}#\d{4,5}\b'
+
+    # Ссылки на профили Overwatch
+    - '(?:https?://)?overwatch\.blizzard\.com/[a-z]{2}-[a-z]{2}/career/[a-zA-Z0-9]+-[0-9]+/?'
+
+  context:
+    - 'battletag'
+    - 'battle tag'
+    - 'battle.net'
+    - 'батлтаг'
+    - 'батлнет'
+
+# ============================================
+# PLAYSTATION NETWORK (PSN)
+# ============================================
+PSN:
+  description: |
+    PlayStation Network (PSN) — Sony gaming platform
+    
+    Формат:
+    - Прямые ссылки на профиль (официальные и трекеры)
+    - Временные ID (temp-XXXXXX)
+    - PSN URI (psn:username)
+    
+    Публичный Online ID (3-16 символов) — слишком общий, не ловим 
+
+  patterns:
+    # Официальные ссылки на профиль (старые и новые)
+    - '(?:https?://)?(?:profile|my)\.playstation\.com/[a-zA-Z0-9_-]{3,16}\b'
+
+    # Популярный трекер трофеев (часто кидают вместо профиля)
+    - '(?:https?://)?psnprofiles\.com/[a-zA-Z0-9_-]{3,16}\b'
+
+    # Временный ID (при бане/нарушении) — только цифры
+    - '\btemp-\d{6,8}\b'
+
+    # PSN URI (старый формат в играх)
+    - '\bpsn:[a-zA-Z0-9_-]{3,16}\b'
+
+  context:
+    - 'psn'
+    - 'playstation'
+    - 'плейстейшен'
+    - 'псн'
+    - 'playstation network'
+    - 'psnprofiles'
+
+# ============================================
+# XBOX LIVE (GAMERTAG)
+# ============================================
+XBOX:
+  description: |
+    Xbox Live — gaming platform from Microsoft.
+
+    Формат:
+    1. Полный Gamertag (с суффиксом): Имя#1234
+       - Имя: 3-12 символов (буквы, цифры, пробелы, начинается с буквы)
+       - Суффикс: 4 цифры после '#'
+    
+    2. Ссылки на профиль:
+       - xbox.com/.../profile/gamertag/...
+       - live.xbox.com/Profile?Gamertag=...
+       - profile.xboxlive.com/users/...
+    
+    Только имя (без суффикса) не ловим, тк имеет слишком общий паттерн
+
+  patterns:
+    # Полный Gamertag (уникальный маркер)
+    - '\b[a-zA-Z][a-zA-Z0-9\s]{2,11}#\d{4}\b'
+
+    # Современные ссылки на профиль (xbox.com)
+    - '(?:https?://)?(?:www\.)?xbox\.com/[a-z]{2}-[A-Z]{2}/profile/gamertag/[a-zA-Z0-9%20+]{3,16}'
+
+    # Старые/технические ссылки (live и profile)
+    - '(?:https?://)?(?:live|profile)\.xbox(?:live)?\.com/(?:Profile\?Gamertag=|users/)[a-zA-Z0-9%20+]{3,16}'
+
+  context:
+    - 'xbox'
+    - 'xbox live'
+    - 'иксбокс лайв'
+    - 'иксбокс'
+    - 'ксбокс'
+    - 'xbox profile'
+
+# ============================================
+# ROBLOX
+# ============================================
+ROBLOX:
+  description: |
+    Roblox — gaming platform
+    
+    Формат:
+    - Ссылки на профиль (уникальные)
+    - Модерированные/служебные username
+    - Специфические форматы (UUID)
+    
+    User ID и обычные username - слишком общие, не ловим
+
+  patterns:
+    # Ссылки на профиль (уникальные)
+    - '(?:https?://)?(?:www\.)?roblox\.com/users/\d+/profile/?'
+
+    # Reset-формат (UNXXXXXXXX / ResetXXXXXXXX)
+    - '\b(?:UN|Reset)\d{7,10}\b'
+
+    # Account Forgotten / Roblox_user_ / Content Deleted
+    - '(?:Account Forgotten|Roblox_user_|\[?Content Deleted\]?)\s*\(?\d+\)?'
+
+    # yyc формат (исторический)
+    - '\byyc\d{4,6}\b'
+
+    # UUID v4 (Китай, Luobu)
+    - '\b[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b'
+
+  context:
+    # Названия платформы
+    - 'roblox'
+    - 'роблокс'
+
+# ============================================
+# GENSHIN IMPACT (UID)
+# ============================================
+GENSHIN_UID:
+  description: |
+    Genshin Impact — UID (уникальный идентификатор игрока)
+    
+    Формат:
+    - 9-10 цифр
+    - Первая цифра определяет сервер:
+      1,2,3 — Китай (Celestia)
+      5 — Китай (Irminsul, Bilibili)
+      6 — Америка
+      7 — Европа
+      8,18 — Азия
+      9 — Тайвань, Гонконг, Макао
+    - Остальные цифры — порядковый номер аккаунта
+    
+    Префиксы 0 и 4 не используются
+    Цифра 4 не встречается в UID - это отсекает много случайных чисел
+    Сам ник не ловим, тк имеет слишком общий паттерн
+
+  patterns:
+    # 9-значный UID (только существующие префиксы серверов)
+    - '\b[1-35-9]\d{8}\b'
+
+    # 10-значный UID (Asia сервер, с версии 4.4)
+    - '\b18\d{8}\b'
+
+  context:
+    - 'genshin'
+    - 'геншин'
+    - 'геншин импакт'
+    - 'genshin impact'
+    - 'uid'
+    - 'уид'
+    - 'юид'

@@ -1,0 +1,605 @@
+# ============================================
+# Социальные сети и мессенджеры
+# ============================================
+
+# ============================================
+# TELEGRAM
+# ============================================
+TELEGRAM:
+  description: |
+    Telegram - messenger
+    
+    Уникальные форматы:
+    - t.me/username
+    - telegram.me/username
+    - telegram.org/username 
+    - tg://resolve?domain=username
+    - https://t.me/username
+    - https://telegram.me/username
+    - https://telegram.org/username
+
+  patterns:
+    # http/https варианты
+    - 'https?://(?:t\.me|telegram\.me|telegram\.org)/[a-zA-Z][a-zA-Z0-9_]{4,31}'
+
+    # без протокола
+    - '\bt\.me/[a-zA-Z][a-zA-Z0-9_]{4,31}'
+    - '\btelegram\.me/[a-zA-Z][a-zA-Z0-9_]{4,31}'
+    - '\btelegram\.org/[a-zA-Z][a-zA-Z0-9_]{4,31}'
+    - '\btg://resolve\?domain=[a-zA-Z][a-zA-Z0-9_]{4,31}'
+
+    # конфликтный @username
+    - '(?:^|(?<=\s))@[a-zA-Z][a-zA-Z0-9_]{4,31}'
+
+  context:
+    - 'telegram'
+    - 'tg'
+    - 'телеграм'
+    - 'телеграмм'
+    - 'телега'
+    - 'тг'
+    - 'telega'
+    - 'telegramm'
+    - 't.me'
+    - 'tg://'
+
+# ============================================
+# VK (ВКОНТАКТЕ)
+# ============================================
+VK:
+  description: |
+    VK — social media 
+    
+    Форматы:
+
+    1. Прямые ссылки на профиль (веб):
+       - vk.com/username
+       - vk.com/id123456789
+       - vkontakte.ru/username
+       - vkontakte.ru/id123456789
+       - m.vk.com/username
+       - m.vk.com/id123456789
+
+    2. Мессенджер (vk.me) — открывает диалог сразу:
+       - vk.me/username
+       - vk.me/id123456789
+       - vk.me/club123456 (сообщество)
+       - vk.me/username?ref=source (с UTM-метками)
+
+    3. Прямая ссылка на сообщения сообщества:
+       - vk.com/write-123456789
+       - vk.com/write-123456789?ref=source
+
+    4. Внутренние текстовые ссылки (квадратные скобки):
+       - [id123456789|текст]
+       - [club123456|текст]
+       - [username|текст]
+       - [vk.me/id123456789|текст]
+
+    5. @-упоминания:
+       - @username
+       - @id123456789
+       - @club123456
+
+    6. Ссылки на конкретные диалоги/сообщения:
+       - vk.com/im?sel=12053604
+       - vk.com/im?sel=c123456
+       - vk.com/im?sel=c123456&msgid=12345
+
+  patterns:
+    # 1. Прямые ссылки на профиль (основные домены)
+    - '(?:https?://)?(?:m\.)?(?:vk\.com|vkontakte\.ru)/(?:id[0-9]+|[a-zA-Z0-9_.-]+)\b'
+
+    # 2. Мессенджер vk.me (с опциональными параметрами)
+    - '(?:https?://)?vk\.me/(?:id[0-9]+|[a-zA-Z0-9_.-]+)(?:\?[a-zA-Z0-9_=&.-]*)?\b'
+
+    # 3. Прямая ссылка на сообщения сообщества
+    - '(?:https?://)?(?:vk\.com|vkontakte\.ru)/write-[0-9]+(?:\?[a-zA-Z0-9_=&.-]*)?\b'
+
+    # 4. Внутренние ссылки в квадратных скобках
+    - '\[(?:id|club|event)[0-9]+\|[^\]]+\]'
+    - '\[[a-zA-Z0-9_.-]+\|[^\]]+\]'  # короткое имя
+    - '\[(?:https?://)?vk\.me/[a-zA-Z0-9_.-]+\|[^\]]+\]'  # vk.me внутри скобок
+
+    # 5. @-упоминания (с защитой от ложных срабатываний)
+    - '(?:^|(?<=\s))@(?:id[0-9]+|club[0-9]+|[a-zA-Z0-9_.-]+)(?=\s|$)'
+
+    # 6. Ссылки на конкретные диалоги (im?sel=...)
+    - '(?:https?://)?(?:vk\.com|vkontakte\.ru)/im\?sel=(?:[0-9]+|c[0-9]+)(?:&[a-zA-Z0-9_=&.-]*)?\b'
+
+  context:
+    - 'вк'
+    - 'вконтакте'
+    - 'vk'
+    - 'vkontakte'
+    - 'вк.ком'
+    - 'vk.me'
+    - 'контакт'
+    - 'в контакте'
+
+# ============================================
+# WHATSAPP
+# ============================================
+WHATSAPP:
+  description: |
+    WhatsApp — messenger
+    
+    Текущие форматы (номер телефона):
+    - https://wa.me/1234567890
+    - https://wa.me/1234567890?text=Hello%20World
+    - https://api.whatsapp.com/send?phone=1234567890
+    - https://api.whatsapp.com/send?phone=1234567890&text=Hello%20World
+
+  patterns:
+    # wa.me формат
+    - 'https?://wa\.me/\d+'
+    - 'https?://wa\.me/\d+\?text=[^\s.,!?]+'
+
+    # api.whatsapp.com формат
+    - 'https?://api\.whatsapp\.com/send\?phone=\d+'
+    - 'https?://api\.whatsapp\.com/send\?phone=\d+&text=[^\s.,!?]+'
+
+    # Номер телефона (гибкий формат, возможны коллизии так что надо проверять контекст)
+    #- '[+\s()0-9-]{10,20}'
+
+  context:
+    # Основные названия
+    - 'whatsapp'
+    - 'ватсап'
+    - 'ватсапп'
+    - 'вотсап'
+    - 'вацап'
+    - 'вацапп'
+
+# ============================================
+# DISCORD
+# ============================================
+DISCORD:
+  description: |
+    Discord — communication app
+    
+    Форматы:
+    
+    1. Старый формат (дискриминатор) — еще встречается:
+       - username#0000 (например, durov#1234)
+       - Username: 2-32 символа, любой символ кроме #
+       - Дискриминатор: 4 цифры (0001-9999)
+    
+    2. Новый формат (с 2024):
+       - @username (например, @durov) — конфликтует с другими платформами
+       - Правила: 2-32 символа, a-z, 0-9, _, .; нижний регистр; нельзя .., начало/конец с .
+       
+    3. Прямые ссылки на профиль (по User ID):
+       - discord.com/users/123456789012345678
+       - discordapp.com/users/123456789012345678
+       - User ID: 17-25 цифр (Snowflake ID, 64-bit число, запас на будущее)
+       
+    4. Ссылки-приглашения:
+       - discord.gg/vvk (короткие, от 2 символов)
+       - discord.com/invite/abc123 (стандартные)
+       - Могут быть кастомными: 2-32 символа, a-z, A-Z, 0-9, _, -
+
+  patterns:
+    # Старый формат с дискриминатором (уникальный!)
+    - '\b[a-zA-Z0-9_][a-zA-Z0-9_]{1,31}#[0-9]{4}\b'
+
+    # Прямые ссылки на профиль по User ID (с протоколом)
+    - 'https?://(?:discord|discordapp)\.com/users/\d{17,25}'
+
+    # Прямые ссылки на профиль без протокола
+    - '\b(?:discord|discordapp)\.com/users/\d{17,25}'
+
+    # Ссылки-приглашения (с протоколом)
+    - 'https?://(?:discord\.gg|discord\.com/invite)/[a-zA-Z0-9_-]{2,32}'
+
+    # Ссылки-приглашения без протокола
+    - '\b(?:discord\.gg|discord\.com/invite)/[a-zA-Z0-9_-]{2,32}'
+
+    # Конфликтный @username
+    - '(?:^|(?<=\s))@(?!.*\.\.)[a-z][a-z0-9_.]{0,30}[a-z0-9]'
+
+  context:
+    - 'discord'
+    - 'дискорд'
+    - 'мой дискорд'
+    - 'напиши в дискорд'
+    - 'скинь в дискорд'
+
+# ============================================
+# TWITTER / X
+# ============================================
+TWITTER_X:
+  description: |
+    Twitter / X — social media
+    
+    Форматы:
+    
+    1. Прямые ссылки (уникальные):
+       - x.com/username
+       - twitter.com/username
+       - https://x.com/username
+       - https://twitter.com/username
+       - www.x.com/username
+       - www.twitter.com/username
+       
+    2. Конфликтные форматы (требуют контекст):
+       - @username (4-15 символов)
+       
+    Правила username:
+    - Длина: 4-15 символов
+    - Символы: a-z, 0-9, _ (латиница, цифры, подчеркивание)
+    - Нельзя: дефисы, точки, пробелы
+
+  patterns:
+    # X.com с протоколом
+    - 'https?://(?:www\.)?x\.com/[a-zA-Z0-9_]{4,15}'
+
+    # X.com без протокола
+    - '\b(?:www\.)?x\.com/[a-zA-Z0-9_]{4,15}'
+
+    # Twitter.com с протоколом
+    - 'https?://(?:www\.)?twitter\.com/[a-zA-Z0-9_]{4,15}'
+
+    # Twitter.com без протокола
+    - '\b(?:www\.)?twitter\.com/[a-zA-Z0-9_]{4,15}'
+
+    # Конфликтный @username (4-15 символов)
+    - '(?:^|(?<=\s))@[a-zA-Z0-9_]{4,15}'
+
+  context:
+    - 'твиттер'
+    - 'twitter'
+    - 'ретвит'
+    - 'ретвитнуть'
+    - 'твит'
+    - 'твитнуть'
+    - 'аккаунт в x'
+    - 'аккаунт в икс'
+    - 'профиль в x'
+    - 'профиль в икс'
+    - 'соцсеть x'
+    - 'соцсеть икс'
+
+# ============================================
+# INSTAGRAM
+# ============================================
+INSTAGRAM:
+  description: |
+    Instagram — social media
+    
+    Форматы:
+    
+    1. Основные домены:
+       - instagram.com/username
+       - instagr.am/username (короткий домен)
+       - ig.me/username (для Директ)
+       
+    2. Конфликтный формат (требует контекст):
+       - @username
+       
+    Правила username:
+    - Длина: 1-30 символов
+    - Символы: a-z, 0-9, ., _
+    - Не может начинаться или заканчиваться точкой
+    - Нельзя две точки подряд (..)
+    - Подчеркивание разрешено в любом месте
+    - Регистр нечувствителен
+
+  patterns:
+    # Instagram.com с защитой от точки в конце и ограничением длины
+    - 'https?://(?:www\.)?instagram\.com/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+    - '\b(?:www\.)?instagram\.com/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+
+    # Короткий домен instagr.am
+    - 'https?://instagr\.am/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+    - '\binstagr\.am/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+
+    # ig.me (для Директ)
+    - 'https?://ig\.me/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+    - '\big\.me/(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_]'
+
+    # Конфликтный @username
+    - '(?:^|(?<=\s))@(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,28}[a-zA-Z0-9_](?=\s|$)'
+
+  context:
+    - 'instagram'
+    - 'инстаграм'
+    - 'инста'
+    - 'insta'
+    - 'инст'
+    - 'inst'
+    - 'директ'
+    - 'direct'
+
+# ============================================
+# TIKTOK
+# ============================================
+TIKTOK:
+  description: |
+    TikTok — short-form video platform
+    
+    Форматы:
+    
+    1. Прямые ссылки (уникальные):
+       - tiktok.com/@username
+       - https://tiktok.com/@username
+       - www.tiktok.com/@username
+       - m.tiktok.com/@username (мобильная версия)
+       - vm.tiktok.com/... (короткие ссылки, 5-25 символов)
+       - vt.tiktok.com/... (альтернативный домен)
+       
+    2. Конфликтные форматы (требуют контекст):
+       - @username (2-24 символа)
+       
+    Правила username:
+    - Длина: 2-24 символа
+    - Символы: a-z, 0-9, ., _
+    - Не может начинаться или заканчиваться точкой
+    - Нельзя две точки подряд (..)
+    - Подчеркивание разрешено
+    - Регистр нечувствителен
+
+  patterns:
+    # TikTok.com с протоколом (основной домен)
+    - 'https?://(?:www\.|m\.)?tiktok\.com/@(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,22}[a-zA-Z0-9_]'
+
+    # TikTok.com без протокола
+    - '\b(?:www\.|m\.)?tiktok\.com/@(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,22}[a-zA-Z0-9_]'
+
+    # Короткие ссылки v[mt].tiktok.com (vm и vt) с ограничением длины 5-25 символов
+    - 'https?://v[mt]\.tiktok\.com/[a-zA-Z0-9]{5,25}'
+    - '\bv[mt]\.tiktok\.com/[a-zA-Z0-9]{5,25}'
+
+    # Конфликтный @username (2-24 символа, без точки в конце)
+    - '(?:^|(?<=\s))@(?!.*\.\.)[a-zA-Z0-9_.][a-zA-Z0-9_.]{0,22}[a-zA-Z0-9_](?=\s|$)'
+
+  context:
+    - 'tiktok'
+    - 'тикток'
+    - 'тик ток'
+    - 'тиктокер'
+    - 'tiktoker'
+    - 'ТТ'
+
+# ============================================
+# YOUTUBE
+# ============================================
+YOUTUBE:
+  description: |
+    YouTube — video platform
+    
+    Форматы:
+    
+    1. Handle URL (основной с 2022):
+       - youtube.com/@handle
+       - https://youtube.com/@handle
+       - www.youtube.com/@handle
+       - m.youtube.com/@handle (мобильная)
+       
+    2. Shorts URL:
+       - youtube.com/shorts/VideoID
+       - https://youtube.com/shorts/VideoID
+       
+    3. Channel ID:
+       - youtube.com/channel/UC... (UC + 22 символа)
+       
+    4. Legacy форматы (все еще работают):
+       - youtube.com/c/custom-name
+       - youtube.com/user/username
+       
+    5. Короткие ссылки:
+       - youtu.be/VideoID
+
+  patterns:
+    # Handle URL с защитой от точки в конце
+    - 'https?://(?:www\.|m\.)?youtube\.com/@[a-zA-Z0-9_.-][a-zA-Z0-9_.-]{0,28}[a-zA-Z0-9_-]'
+    - '\b(?:www\.|m\.)?youtube\.com/@[a-zA-Z0-9_.-][a-zA-Z0-9_.-]{0,28}[a-zA-Z0-9_-]'
+
+    # Shorts URL (видео в вертикальном формате)
+    - 'https?://(?:www\.)?youtube\.com/shorts/[A-Za-z0-9_-]{11}'
+    - '\b(?:www\.)?youtube\.com/shorts/[A-Za-z0-9_-]{11}'
+
+    # Channel ID (UC + 22 символа)
+    - 'https?://(?:www\.)?youtube\.com/channel/UC[A-Za-z0-9_-]{21}[AQgw]'
+    - '\b(?:www\.)?youtube\.com/channel/UC[A-Za-z0-9_-]{21}[AQgw]'
+
+    # Legacy custom URL
+    - 'https?://(?:www\.)?youtube\.com/c/[a-zA-Z0-9_.-]+'
+    - '\b(?:www\.)?youtube\.com/c/[a-zA-Z0-9_.-]+'
+
+    # Legacy username URL
+    - 'https?://(?:www\.)?youtube\.com/user/[a-zA-Z0-9_.-]+'
+    - '\b(?:www\.)?youtube\.com/user/[a-zA-Z0-9_.-]+'
+
+    # Короткие ссылки youtu.be
+    - 'https?://youtu\.be/[A-Za-z0-9_-]{11}'
+    - '\byoutu\.be/[A-Za-z0-9_-]{11}'
+
+  context:
+    # Названия платформы
+    - 'youtube'
+    - 'ютуб'
+    - 'ютюб'
+    - 'ютубчик'
+
+# ============================================
+# SKYPE
+# ============================================
+SKYPE:
+  description: |
+    Skype — communication platform, owned by Microsoft
+    
+    Форматы:
+    
+    1. Skype URI scheme (прямые ссылки):
+       - skype:username?call
+       - skype:username?chat
+       - skype:username?add
+       - skype:live:username (для Live ID)
+       
+    2. Приглашения:
+       - https://join.skype.com/invite/xxxxx
+       
+    3. Старые форматы:
+       - live:username
+       
+
+  patterns:
+    # Skype URI scheme (с поддержкой live: внутри)
+    - 'skype:[a-zA-Z0-9_:.-]+(?:\?[a-z]+)?'
+
+    # Приглашения join.skype.com (с ограничением длины 5-32 символов)
+    - 'https?://join\.skype\.com/invite/[a-zA-Z0-9_-]{5,32}'
+    - '\bjoin\.skype\.com/invite/[a-zA-Z0-9_-]{5,32}'
+
+    # Старый live: формат
+    - 'live:[a-zA-Z0-9_.-]+'
+
+
+  context:
+    - 'skype'
+    - 'скайп'
+
+# ============================================
+# SIGNAL
+# ============================================
+SIGNAL:
+  description: |
+    Signal — private massenger
+    
+    Форматы:
+    
+    1. Username с дискриминатором (с 2024) — уникальный формат:
+       - @username.12
+       - @username.123
+       - @username_123.45
+       
+       Правила:
+       - Username: 3-20 символов (a-z, 0-9, _)
+       - Точка между именем и цифрами (обязательно)
+       - Цифры (дискриминатор): 2-9 цифр, не начинаются с 0
+       - Общая длина до 32 символов
+       
+    2. Прямые ссылки на профиль:
+       - https://signal.me/#p/xxxxxxxx
+       - sgnl://signal.me/#p/xxxxxxxx
+       
+    3. Номер телефона (требует контекст):
+       - +79001234567
+       - 89001234567
+
+  patterns:
+    # Username с дискриминатором (уникальный формат)
+    - '@[a-z0-9_]{3,20}\.[1-9][0-9]{1,8}'
+
+    # Signal.me прямые ссылки (с протоколом)
+    - 'https?://signal\.me/#p/[a-zA-Z0-9]{5,32}'
+    - 'sgnl://signal\.me/#p/[a-zA-Z0-9]{5,32}'
+
+    # Signal.me без протокола
+    - '\bsignal\.me/#p/[a-zA-Z0-9]{5,32}'
+
+    # Номер телефона (гибкий формат, возможны коллизии так что надо проверять контекст)
+    #- '[+\s()0-9-]{10,20}'
+
+  context:
+    - 'signal'
+    - 'сигнал'
+
+# ============================================
+# VIBER
+# ============================================
+VIBER:
+  description: |
+    Viber — messenger
+
+    Форматы:
+
+    1. Прямые ссылки:
+       - viber://chat?number=%2B79991234567  (с URL-кодировкой, универсально)
+       - viber://chat?number=+79991234567    (может работать на ПК)
+       - viber://chat?number=79991234567     (без плюса)
+       - viber://add?number=79991234567      (устаревший формат)
+
+    2. Номер телефона (требует контекст):
+       - +7 900 123-45-67
+       - 8 (900) 123-45-67
+       - 79001234567
+
+  patterns:
+    # Объединенный паттерн для всех viber:// ссылок
+    - 'viber://(?:chat|add)\?number=(?:%2B|\+)?\d+'
+
+    # Номер телефона (гибкий формат, возможны коллизии так что надо проверять контекст)
+   #- '[+\s()0-9-]{10,20}'
+
+  context:
+    - 'viber'
+    - 'вайбер'
+
+# ============================================
+# MAX (российский мессенджер)
+# ============================================
+MAX:
+  description: |
+    MAX — российский мессенджер от VK
+    
+    Персональные данные (идентифицируют человека):
+    
+    1. Профиль пользователя:
+       - max.ru/u/abc123
+       - max.ru/username
+       - https://max.ru/username
+
+  patterns:
+    # Профиль с /u/ (основной формат)
+    - '(?:https?://)?max\.ru/u/[a-zA-Z0-9_-]+'
+
+    # Короткий профиль max.ru/username (не служебные страницы)
+    - '(?:https?://)?max\.ru/(?!(?:u|invite|join|c|p|download|web))[a-zA-Z0-9][a-zA-Z0-9_.-]{2,30}[a-zA-Z0-9]\b'
+
+  context:
+    - 'max'
+    - 'мессенджер max'
+    - 'мой max'
+    - 'профиль в max'
+    - 'max.ru'
+
+# ============================================
+# GITHUB
+# ============================================
+GITHUB:
+  description: |
+    GitHub — platform for developers
+    
+    Форматы:
+    
+    1. Прямые ссылки на профиль (уникальные):
+       - github.com/username
+       - https://github.com/username
+       - www.github.com/username
+       
+    2. GitHub EMU (Enterprise Managed Users) — с подчеркиванием:
+       - username_company (тоже ловится общим паттерном)
+       
+    3. Конфликтные форматы (требуют контекст):
+       - @username
+    
+    Правила username:
+    - Длина: 1-39 символов
+    - Символы: a-z, A-Z, 0-9, дефис (-), подчеркивание (_) для EMU
+    - Дефисы: не в начале, не в конце, не подряд (-- запрещено)
+    - Регистр чувствителен
+
+  patterns:
+    # Общий паттерн для всех username (обычные + EMU)
+    - '(?:https?://)?(?:www\.)?github\.com/(?!(?:trending|marketplace|explore|notifications|settings|orgs|apps|pulls|issues))(?!--.*--)[a-zA-Z0-9][a-zA-Z0-9_-]{0,37}[a-zA-Z0-9]\b'
+
+    # @-упоминания (с защитой от двойных дефисов)
+    - '(?:^|(?<=\s))@(?!--.*--)[a-zA-Z0-9][a-zA-Z0-9-]{0,37}[a-zA-Z0-9](?=\s|$)'
+
+  context:
+    - 'github'
+    - 'гитхаб'
+    - 'git'
+    - 'гит'
