@@ -184,7 +184,6 @@ def check_ip(ip_string):
         # Пытаемся распарсить как IP
         ip = ipaddress.ip_address(ip_string)
 
-        # Если успешно - возвращаем True
         return True
     except ValueError:
         # Невалидный IP
@@ -206,7 +205,7 @@ def extract_from_yaml(text, yaml_path):
         'PASSPORT_RF', 'DRIVER_LICENSE', 'STS', 'PASSPORT_INTERNATIONAL',
         'REFUGEE_ID', 'RESIDENCE_PERMIT', 'OMS', 'GENSHIN_UID', 'LARGE_FAMILY_ID',
 
-        'AGE', 'BIRTH_DATE', 'COMBAT_VETERAN_ID','MARRIAGE_CERTIFICATE'
+        'AGE', 'BIRTH_DATE', 'COMBAT_VETERAN_ID','MARRIAGE_CERTIFICATE',
 
         'EDUCATION_DOC', 'WORK_BOOK', 'MILITARY_ID', 'CRIMINAL_RECORD_CERTIFICATE'
     ]
