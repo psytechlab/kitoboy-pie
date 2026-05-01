@@ -1,0 +1,68 @@
+Кластер 1: Цифровой монолит (6–12 цифр)
+
+PASSPORT_RF, DRIVER_LICENSE (10 цифр), STS (цифровой), INN_LEGAL, INN_INDIVIDUAL, SNILS (слитный), PHONE, LARGE_FAMILY_ID, GENSHIN_UID, REFUGEE_ID, RESIDENCE_PERMIT, PASSPORT_INTERNATIONAL (новый), OMS (временный), EDUCATION_DOC (рег. номер).
+
+NER: Студенческий билет, Ученический билет, Полис ДМС (короткий), Возраст, Рост/Вес.
+
+
+
+
+Кластер 2: Числовая жадность (13–19 цифр)
+
+BANK_CARD, OMS (основной), TRACK_RUSSIAN_POST, EDUCATION_DOC (новый).
+
+NER: Полис ДМС (16 цифр).
+
+
+
+
+Кластер 3: Кириллические гибриды (Буквы + Цифры)
+
+MARRIAGE_CERTIFICATE, BIRTH_CERTIFICATE, MILITARY_ID, WORK_BOOK, EDUCATION_DOC (старый), CRIMINAL_RECORD_CERTIFICATE (старый).
+
+
+
+
+Кластер 4: Структурные близнецы (2+2+6)
+
+PASSPORT_INTERNATIONAL (старый), DRIVER_LICENSE (2+2+6), PTS / STS (бумажные), CRIMINAL_RECORD_CERTIFICATE (000АN).
+
+
+
+
+Кластер 5: Никнеймы
+
+5А (@): TELEGRAM, VK, DISCORD, TWITTER_X, INSTAGRAM, TIKTOK, GITHUB, SIGNAL, Никнейм (NER).
+
+5Б (#): DISCORD (old), BATTLETAG, XBOX.
+
+
+
+
+Кластер 6: Юридические номера (Конфликтные)
+
+COURT_CASE_NUMBER, COURT_ORDER_NUMBER, COURT_CASE_SOJ_NUMBER.
+
+
+
+
+Кластер 7: Чистый NER (Без регулярок)
+
+ФИО, Пол, Семейное положение, Наличие детей, Образование, Место работы/Должность, Профессия, Диагнозы, Аллергия, Инвалидность, Ученое звание, Адрес, Город, Регион.
+
+
+
+
+Кластер 8: Безопасная зона (Уникальные)
+
+Финансы/Доки: VIN, IP_ADDRESS, EMAIL, LICENSE_PLATE_RU, SEAFARER_ID, TRACK_INTERNATIONAL, SWIFT_BIC, IBAN, YMONEY, WEBMONEY_PURSE, CRYPTO_WALLET (кроме Solana), OSAGO, BANK_ACCOUNT, ЭПТС, SNILS (с разделителями), INN_INDIVIDUAL (после Checksum).
+
+Юристы: ARBITRATION_CASE, ENFORCEMENT_PROCEDURE, CRIMINAL_RECORD_CERTIFICATE (электронный).
+
+Платформы: STEAM_ID, SIGNAL (с суффиксом), SKYPE, MAX, WHATSAPP, YOUTUBE, PSN, EPIC_GAMES, ROBLOX, HABR_CAREER, LINKEDIN, SUPERJOB, AVITO, HH.
+
+
+
+
+Кластер 9: Хамелеоны (Смена форматов)
+STS / PTS, INN, CRIMINAL_RECORD_CERTIFICATE, CRYPTO_WALLET (Solana), Паспортные данные (NER).
