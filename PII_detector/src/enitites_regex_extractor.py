@@ -257,7 +257,7 @@ def extract_from_yaml(text, yaml_path):
 
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[1]
 
 
 def extract_all(text, config_dir=BASE_DIR / 'configs'):
@@ -300,7 +300,7 @@ def resolve_conflicts(matches):
     # Возвращаем отсортированными по порядку появления в тексте
     return sorted(final_matches, key=lambda x: x['start'])
 
-examples = BASE_DIR / 'examples.yaml'
+examples = BASE_DIR / 'data' / 'examples.yaml'
 with open(examples, 'r', encoding='utf-8') as f:
     example_load = yaml.safe_load(f)
     for example_name, example_text in example_load.items():
