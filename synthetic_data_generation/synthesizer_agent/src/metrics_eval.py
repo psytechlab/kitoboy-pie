@@ -1,6 +1,8 @@
 import json
 import re
+from collections import Counter
 from pathlib import Path
+from statistics import StatisticsError, mode
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -107,8 +109,59 @@ def compute_semantic_repetition(results):
 
 
 
+
+def compute_dataset_stats(results):
+    entity_counts = [len(item.get("used_entities", [])) for item in results]
+    entity_type_counts = Counter(
+        ent.get("key")
+        for item in results
+        for ent in item.get("used_entities", [])
+        if ent.get("key")
+    )
+    count_distribution = Counter(entity_counts)
+
+    if entity_counts:
+        try:
+            entities_per_text_mode = mode(entity_counts)
+        except StatisticsError: # ручной подсчет моды:
+            # сначала по частоте по убыванию: -x[1]
+            # при равной частоте по числу сущностей по возрастанию: x[0]
+            entities_per_text_mode = sorted(count_distribution.items(), key=lambda x: (-x[1], x[0]))[0][0]
+
+        entities_per_text = {
+            "min": int(min(entity_counts)),
+            "max": int(max(entity_counts)),
+            "mean": float(np.mean(entity_counts)),
+            "median": float(np.median(entity_counts)),
+            "mode": int(entities_per_text_mode),
+            "distribution": {int(k): int(v) for k, v in sorted(count_distribution.items())},
+        }
+    else:
+        entities_per_text = {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "median": 0.0,
+            "mode": 0,
+            "distribution": {},
+        }
+
+    total_texts = len(results)
+    total_entities = sum(entity_counts)
+    texts_with_entities = sum(1 for count in entity_counts if count > 0)
+
+    return {
+        "total_texts": total_texts,
+        "total_entities": total_entities,
+        "texts_with_entities": texts_with_entities,
+        "texts_without_entities": total_texts - texts_with_entities,
+        "entities_per_text": entities_per_text,
+        "entity_type_counts": dict(sorted(entity_type_counts.items())),
+    }
+
 def compute_all_metrics(results):
     return {
+        "dataset_stats": compute_dataset_stats(results),
         "tag_correctness": compute_tag_correctness(results),
         "semantic_repetition": compute_semantic_repetition(results),
     }
@@ -128,7 +181,7 @@ def main():
     base_dir = Path(__file__).resolve().parents[1]
     results = load_jsonl(base_dir / "outputs" / "synthesized_pii.jsonl")
     report = compute_all_metrics(results)
-    print(report)
+    print(report['dataset_stats'])
 
 
 if __name__ == "__main__":
