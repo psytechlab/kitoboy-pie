@@ -11,25 +11,45 @@ TAG_RE = re.compile(r"<([A-Z0-9_]+)>.*?</\1>", flags=re.DOTALL)
 WS_RE = re.compile(r"\s+")
 
 
+def _tagged_values(text, key):
+    pattern = re.compile(rf"<{re.escape(key)}>(.*?)</{re.escape(key)}>", flags=re.DOTALL)
+    return pattern.findall(text)
+
+
 def compute_tag_correctness(results):
     total_texts = len(results)
     total_entities = 0
     correct_entities = 0
     strict_correct_texts = 0
+    exact_mismatches = []
 
-    for item in results:
+    for text_idx, item in enumerate(results):
         text = item["text"]
         used_entities = item["used_entities"]
         text_ok = True
 
-        for ent in used_entities:
+        for ent_idx, ent in enumerate(used_entities):
             total_entities += 1
             key = ent["key"]
             value = ent["value"]
-            if f"<{key}>{value}</{key}>" in text:
+            expected = f"<{key}>{value}</{key}>"
+            if expected in text:
                 correct_entities += 1
             else:
                 text_ok = False
+                exact_mismatches.append(
+                    {
+                        "text_index": text_idx,
+                        "jsonl_line": text_idx + 1,
+                        "entity_index": ent_idx,
+                        "key": key,
+                        "value": value,
+                        "expected": expected,
+                        "actual_tagged_values": _tagged_values(text, key),
+                        "text": text,
+                        "used_entities": used_entities,
+                    }
+                )
 
         if text_ok:
             strict_correct_texts += 1
@@ -41,6 +61,7 @@ def compute_tag_correctness(results):
         "correct_entities": correct_entities,
         "total_texts": total_texts,
         "strict_correct_texts": strict_correct_texts,
+        "exact_mismatches": exact_mismatches,
     }
 
 
