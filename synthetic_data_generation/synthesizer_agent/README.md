@@ -6,7 +6,8 @@
 
 - `notebooks/` - основные эксперименты с синтезатором.
 - `src/metrics_eval.py` - расчет метрик по сгенерированному JSONL.
-- `outputs/` - локальные результаты синтеза (`synthesized_pii.jsonl`, `final_results.json` и т.п.). Не коммитится.
+- `outputs/synthesized_pii.jsonl` - общий накопительный датасет. Не коммитится.
+- `outputs/history/` - JSONL-файлы отдельных запусков синтезатора. Не коммитится.
 
 ## Входные данные
 
