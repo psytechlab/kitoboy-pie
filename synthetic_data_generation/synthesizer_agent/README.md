@@ -4,7 +4,8 @@
 
 ## Структура
 
-- `notebooks/` - основные эксперименты с синтезатором.
+- `notebooks/synthesizer_agent.ipynb` - основной ноутбук синтезатора.
+- `notebooks/dataset_analysis.ipynb` - анализ накопленного JSONL: метрики, exact mismatches, похожие пары и ручной просмотр примеров.
 - `src/metrics_eval.py` - расчет метрик по сгенерированному JSONL.
 - `outputs/synthesized_pii.jsonl` - общий накопительный датасет. Не коммитится.
 - `outputs/history/` - JSONL-файлы отдельных запусков синтезатора. Не коммитится.

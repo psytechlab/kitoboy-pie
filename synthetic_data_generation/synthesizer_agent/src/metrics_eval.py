@@ -182,6 +182,8 @@ def main():
     results = load_jsonl(base_dir / "outputs" / "synthesized_pii.jsonl")
     report = compute_all_metrics(results)
     print(report['dataset_stats'])
+    print(report['tag_correctness'])
+    print(report['semantic_repetition'])
 
 
 if __name__ == "__main__":

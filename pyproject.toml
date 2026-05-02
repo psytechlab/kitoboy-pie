@@ -7,6 +7,7 @@ dependencies = [
     "arize-phoenix>=11.0.0",
     "datetime>=6.0",
     "faker>=40.0.0",
+    "fastapi>=0.135.3",
     "ipykernel>=7.2.0",
     "ipython>=8.0.0",
     "langchain>=0.3.0",
