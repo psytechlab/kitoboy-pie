@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.responses import Response
 from app.information_extractor import NavecIE, RegexIE
-from app.utils import format_combined
+from app.utils import merge_entities
 from app.models import TritonRequest, OutputObject, TritonResponse
 
 app = FastAPI()
@@ -16,9 +16,6 @@ app.state.ie_list = [
 def get_version():
     """
     Get API version information.
-    
-    Returns:
-        dict: Dictionary containing API name, version and extensions
     """
     return {"name": "triton-like", "version": "1.0.0", "extensions": []}
 
@@ -27,9 +24,6 @@ def get_version():
 def ready():
     """
     Health check endpoint.
-    
-    Returns:
-        Response: 200 OK response indicating service is ready
     """
     return Response(status_code=200)
 
@@ -38,21 +32,19 @@ def ready():
 def infer(inputs: TritonRequest):
     """
     Perform inference on input data using multiple information extraction models.
-    
-    Args:
-        inputs (TritonRequest): Request object containing batch of input texts
-        
-    Returns:
-        TritonResponse: Response object containing combined predictions for each input
     """
-    request_batched = [x.data for x in inputs.inputs]
-    margin_predicts = []
-    for ie in app.state.ie_list:
-        margin_predicts.append([ie.predict(x) for x in request_batched])
-    combined = []
-    for one_text_preds in zip(*margin_predicts):
-        combined.append([format_combined(preds) for preds in zip(*one_text_preds)])
-    output_objs = [OutputObject(shape=[len(x)], data=x) for x in combined]
+    output_objs = []
+
+    for input_obj in inputs.inputs:
+        texts = input_obj.data
+        extractor_predictions = [ie.predict(texts) for ie in app.state.ie_list]
+
+        combined = []
+        for per_text_predictions in zip(*extractor_predictions):
+            combined.append(merge_entities(list(per_text_predictions)))
+
+        output_objs.append(OutputObject(shape=[len(combined)], data=combined))
+
     return TritonResponse(outputs=output_objs)
 
 
@@ -60,14 +52,6 @@ def infer(inputs: TritonRequest):
 def config():
     """
     Get model configuration.
-    
-    Returns:
-        dict: Dictionary containing model configuration parameters including:
-            - name
-            - platform 
-            - backend
-            - version policy
-            - max batch size
     """
     return {
         "name": "pie",
