@@ -1,0 +1,176 @@
+идентификационный номер налогоплательщика	INN
+свидетельство о расторжении брака	FAMILY_DOC
+справка об отсутствии судимости	CRIMINAL_RECORD_CERTIFICATE
+биометрический загранпаспорт	PASSPORT_INTERNATIONAL
+индивидуальный лицевой счет	SNILS
+индивидуальный лицевой счёт	SNILS
+исполнительное производство	COURT
+водительское удостоверение	DRIVER_LICENSE
+свидетельство о рождении	FAMILY_DOC
+система быстрых платежей	PHONE_NUMBER
+номер судебного приказа	COURT
+свидетельство о браке	FAMILY_DOC
+электронная трудовая	WORK_BOOK
+youtube.com/channel	YOUTUBE
+справка о судимости	CRIMINAL_RECORD_CERTIFICATE
+водительские права	DRIVER_LICENSE
+студенческий билет	EDUCATION_DOC
+discord.com/users	DISCORD
+вид на жительство	RESIDENCE_PERMIT
+медицинский полис	OMS_DMS
+паспортные данные	PASSPORT_RF
+ссылка на профиль	CAREER_PROFILE
+электронная почта	EMAIL
+ethereum address	CRYPTO_WALLET
+арбитражное дело	COURT
+банковская карта	BANK_CARD
+bitcoin address	CRYPTO_WALLET
+linkedin.com/in	CAREER_PROFILE
+банковский счет	BANK_ACCOUNT
+банковский счёт	BANK_ACCOUNT
+дебетовая карта	BANK_CARD
+кредитная карта	BANK_CARD
+налоговый номер	INN
+напиши на почту	EMAIL
+номер аттестата	EDUCATION_DOC
+страховой номер	SNILS
+судебный приказ	COURT
+трудовая книжка	WORK_BOOK
+max мессенджер	MAX
+номер паспорта	PASSPORT_RF
+номер телефона	PHONE_NUMBER
+расчетный счет	BANK_ACCOUNT
+расчетный счёт	BANK_ACCOUNT
+серия паспорта	PASSPORT_RF
+crypto wallet	CRYPTO_WALLET
+instagram.com	INSTAGRAM
+youtube.com/@	YOUTUBE
+военный билет	MILITARY_ID
+загранпаспорт	PASSPORT_INTERNATIONAL
+криптокошелек	CRYPTO_WALLET
+криптокошелёк	CRYPTO_WALLET
+номер диплома	EDUCATION_DOC
+серия диплома	EDUCATION_DOC
+яндекс деньги	PAYMENT_SYSTEMS
+hh.ru/resume	CAREER_PROFILE
+авито работа	CAREER_PROFILE
+лицевой счет	BANK_ACCOUNT
+лицевой счёт	BANK_ACCOUNT
+почта россии	TRACKING
+хабр карьера	CAREER_PROFILE
+btc address	CRYPTO_WALLET
+career.habr	CAREER_PROFILE
+habr career	CAREER_PROFILE
+twitter.com	TWITTER_X
+адрес почты	EMAIL
+мой профиль	CAREER_PROFILE
+напиши в тг	TELEGRAM
+номер карты	BANK_CARD
+полис каско	TRANSPORT
+полис осаго	TRANSPORT
+скинь номер	PHONE_NUMBER
+discord.gg	DISCORD
+github.com	GITHUB
+tiktok.com	TIKTOK
+в контакте	VK
+внешний ip	IP_ADDRESS
+кинь номер	PHONE_NUMBER
+мой github	GITHUB
+номер дела	COURT
+трек номер	TRACKING
+трек-номер	TRACKING
+ютуб канал	YOUTUBE
+instagram	INSTAGRAM
+vkontakte	VK
+вин номер	TRANSPORT
+вконтакте	VK
+гос номер	TRANSPORT
+дай номер	PHONE_NUMBER
+инстаграм	INSTAGRAM
+мобильный	PHONE_NUMBER
+мой канал	YOUTUBE
+мой номер	PHONE_NUMBER
+номер птс	TRANSPORT
+номер стс	TRANSPORT
+перезвони	PHONE_NUMBER
+пиши в тг	TELEGRAM
+по номеру	PHONE_NUMBER
+позвоните	PHONE_NUMBER
+полис дмс	OMS_DMS
+полис омс	OMS_DMS
+телеграмм	TELEGRAM
+эл. почта	EMAIL
+/people/	URL_PROFILE_HINT
+/resume/	URL_PROFILE_HINT
+ip-адрес	IP_ADDRESS
+linkedin	CAREER_PROFILE
+superjob	CAREER_PROFILE
+telegram	TELEGRAM
+webmoney	PAYMENT_SYSTEMS
+whatsapp	WHATSAPP
+айпишник	IP_ADDRESS
+госномер	TRANSPORT
+телеграм	TELEGRAM
+/users/	URL_PROFILE_HINT
+discord	DISCORD
+военник	MILITARY_ID
+дискорд	DISCORD
+паспорт	PASSPORT_RF
+позвони	PHONE_NUMBER
+стд-пфр	WORK_BOOK
+твиттер	TWITTER_X
+телефон	PHONE_NUMBER
+e-mail	EMAIL
+tiktok	TIKTOK
+vk.com	VK
+ватсап	WHATSAPP
+вотсап	WHATSAPP
+гитхаб	GITHUB
+дело №	COURT
+загран	PASSPORT_INTERNATIONAL
+мой вк	VK
+мой тг	TELEGRAM
+резюме	CAREER_PROFILE
+телега	TELEGRAM
+тикток	TIKTOK
+юmoney	PAYMENT_SYSTEMS
+email	EMAIL
+swift	IBAN_SWIFT
+tg://	TELEGRAM
+vk.me	VK
+wa.me	WHATSAPP
+x.com	TWITTER_X
+вацап	WHATSAPP
+звони	PHONE_NUMBER
+инста	INSTAGRAM
+почта	EMAIL
+снилс	SNILS
+стд-р	WORK_BOOK
+юмани	PAYMENT_SYSTEMS
+iban	IBAN_SWIFT
+mail	EMAIL
+qiwi	PAYMENT_SYSTEMS
+t.me	TELEGRAM
+usdt	CRYPTO_WALLET
+wmid	PAYMENT_SYSTEMS
+айпи	IP_ADDRESS
+киви	PAYMENT_SYSTEMS
+мейл	EMAIL
+мыло	EMAIL
+/id	URL_PROFILE_HINT
+bic	IBAN_SWIFT
+ems	TRACKING
+max	MAX
+s10	TRACKING
+vin	TRANSPORT
+бик	IBAN_SWIFT
+внж	RESIDENCE_PERMIT
+дмс	OMS_DMS
+инн	INN
+омс	OMS_DMS
+сбп	PHONE_NUMBER
+cv	CAREER_PROFILE
+id	URL_PROFILE_HINT
+tg	TELEGRAM
+тг	TELEGRAM
+@	AT_HANDLE

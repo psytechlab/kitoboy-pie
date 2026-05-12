@@ -1,0 +1,10 @@
+input=/Users/artemzmailov/Desktop/kitoboy-PII/real_pii_collection/data/dvach_posts.jsonl
+output=/Users/artemzmailov/Desktop/kitoboy-PII/real_pii_collection/data/outputs/keyword_filter/dvach_posts.mir_card_2200_2204.jsonl
+processed=127554
+kept=0
+conversion=0.0000%
+
+keyword_hits:
+
+regex_hits:
+0	(?<!\d)(?:2200|2201|2202|2203|2204)[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}(?!\d)

@@ -1,0 +1,344 @@
+Команды для парсинга Двача и LLM-фильтрации PII-кандидатов
+=============================================================
+
+Все команды запускать из корня проекта:
+
+  cd /Users/artemzmailov/Desktop/kitoboy-PII
+
+
+1. Быстрый тест парсера
+----------------------
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --boards b \
+    --threads-per-board 2 \
+    --posts-per-thread 50 \
+    --max-posts 100 \
+    --save-dir real_pii_collection/data
+
+Что делает:
+- парсит только /b/;
+- берёт 2 треда;
+- максимум 50 постов из каждого треда;
+- останавливается на 100 постах.
+
+
+2. Долгий сбор на 1 час
+----------------------
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --all-boards \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 60 \
+    --cycles 0 \
+    --cycle-sleep 300 \
+    --save-dir real_pii_collection/data
+
+Что делает:
+- идёт по большому списку досок;
+- --threads-per-board 0 означает брать все треды из threads.json;
+- --posts-per-thread 0 означает брать все посты из треда;
+- --max-runtime-minutes 60 означает работать 60 минут;
+- --cycles 0 означает повторять обходы до лимита времени;
+- --cycle-sleep 300 означает ждать 5 минут между полными обходами.
+
+
+3. Долгий сбор на ночь, 8 часов
+-------------------------------
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --all-boards \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 480 \
+    --cycles 0 \
+    --cycle-sleep 300 \
+    --save-dir real_pii_collection/data
+
+
+4. Продолжить сбор завтра
+-------------------------
+
+Запустить ту же команду, что и вчера.
+
+Скрипт использует checkpoint:
+
+  real_pii_collection/data/crawl_state.json
+
+И читает уже собранные посты:
+
+  real_pii_collection/data/dvach_posts.jsonl
+
+Поэтому он пропускает уже скачанные треды и не добавляет дубли постов.
+
+
+5. Начать сбор с нуля
+---------------------
+
+Осторожно: --fresh удалит текущий dvach_posts.jsonl и crawl_state.json.
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --all-boards \
+    --fresh \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 60 \
+    --cycles 0 \
+    --save-dir real_pii_collection/data
+
+
+6. Принудительно перекачать уже обработанные треды
+--------------------------------------------------
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --all-boards \
+    --redownload-existing-threads \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 60 \
+    --cycles 0 \
+    --save-dir real_pii_collection/data
+
+Обычно это не нужно. Использовать, если хочется обновить raw_threads.
+
+
+7. Парсить только выбранные доски
+--------------------------------
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --boards b,soc,po,wrk,hw,biz,dev \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 120 \
+    --cycles 0 \
+    --save-dir real_pii_collection/data
+
+
+8. Где лежат результаты
+-----------------------
+
+Очищенные посты для LLM:
+
+  real_pii_collection/data/dvach_posts.jsonl
+
+Исходные JSON тредов:
+
+  real_pii_collection/data/raw_threads/
+
+Checkpoint для продолжения:
+
+  real_pii_collection/data/crawl_state.json
+
+Результаты LLM-фильтра старого формата:
+
+  real_pii_collection/data/outputs/pii_candidates_llm.jsonl
+  real_pii_collection/data/outputs/pii_candidates_llm.csv
+
+Результаты LLM-фильтра нового resumable-формата:
+
+  real_pii_collection/data/outputs/llm_candidates/
+  real_pii_collection/data/llm_state/
+
+
+9. LLM-фильтрация через Mistral
+-------------------------------
+
+Открыть ноутбук:
+
+  real_pii_collection/notebooks/pii_candidate_filter_mistral.ipynb
+
+Перед запуском проверить, что в корневом .env есть:
+
+  MISTRAL_API_KEY=...
+
+Перед запуском положить JSONL для обработки сюда:
+
+  real_pii_collection/data/data_for_pii_finding/
+
+Например, скопировать текущий корпус Двача:
+
+  mkdir -p real_pii_collection/data/data_for_pii_finding
+  cp real_pii_collection/data/dvach_posts.jsonl real_pii_collection/data/data_for_pii_finding/dvach_posts.jsonl
+
+В ноутбуке можно менять:
+
+  MAX_ROWS = 0
+  BATCH_SIZE = 100
+
+MAX_ROWS=0 означает идти до конца файла. Для теста можно поставить 1000.
+
+Состояние сохраняется сюда:
+
+  real_pii_collection/data/llm_state/dvach_posts.state.json
+
+Кандидаты сразу дописываются сюда:
+
+  real_pii_collection/data/outputs/llm_candidates/dvach_posts.candidates.jsonl
+  real_pii_collection/data/outputs/llm_candidates/dvach_posts.candidates.csv
+
+Если API упал, ячейка должна упасть. Просто перезапусти её: она продолжит с next_line_idx
+из state-файла. Обработанные батчи не будут прогнаны второй раз.
+
+Когда файл обработан полностью, можно убрать его из папки и положить другой:
+
+  rm real_pii_collection/data/data_for_pii_finding/dvach_posts.jsonl
+
+Сбросить LLM-прогон для конкретного файла:
+
+  rm real_pii_collection/data/llm_state/dvach_posts.state.json
+  rm real_pii_collection/data/outputs/llm_candidates/dvach_posts.candidates.jsonl
+  rm real_pii_collection/data/outputs/llm_candidates/dvach_posts.candidates.csv
+
+
+10. Важные замечания
+--------------------
+
+- По умолчанию используется https://2ch.su, потому что https://2ch.hk может отдавать HTML вместо JSON API.
+- Raw/JSONL/CSV файлы игнорируются корневым .gitignore.
+- Если процесс остановить через Ctrl+C, уже обработанные треды останутся в crawl_state.json.
+- На следующем запуске скрипт продолжит без повторного скачивания этих тредов.
+
+
+11. Рекомендуемый первый таргетный сбор
+--------------------------------------
+
+Для первого реального прогона лучше не качать сразу весь Двач, а собрать 1-3 ГБ raw
+с досок, где выше шанс встретить PII.
+
+Рекомендуемые доски:
+
+  wrk,biz,soc,po,hw,dev,mobi,pr,ra,rf,un,b
+
+Команда на 2 часа:
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --boards wrk,biz,soc,po,hw,dev,mobi,pr,ra,rf,un,b \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 120 \
+    --cycles 0 \
+    --cycle-sleep 300 \
+    --save-dir real_pii_collection/data
+
+Логика:
+- wrk: работа, вакансии, контакты, компании;
+- biz: сделки, переводы, карты, аккаунты;
+- soc: личные истории, соцсети, отношения;
+- po: локальные обсуждения, ФИО, ссылки;
+- hw/dev/mobi: техподдержка, email, IP, аккаунты, устройства;
+- pr/ra/rf/un: бытовые, учебные и тематические обсуждения;
+- b: много шума, но много объёма и иногда всё подряд.
+
+
+12. Проверить, сколько уже собрано
+----------------------------------
+
+Размер всей папки:
+
+  du -sh real_pii_collection/data
+
+Размер raw-тредов:
+
+  du -sh real_pii_collection/data/raw_threads
+
+Количество очищенных постов:
+
+  wc -l real_pii_collection/data/dvach_posts.jsonl
+
+Количество скачанных raw JSON тредов:
+
+  find real_pii_collection/data/raw_threads -name "*.json" | wc -l
+
+
+13. Если первый прогон хороший, добрать корпус
+----------------------------------------------
+
+Добрать ещё 8 часов на тех же досках:
+
+  uv run python real_pii_collection/scripts/scrape_dvach.py \
+    --boards wrk,biz,soc,po,hw,dev,mobi,pr,ra,rf,un,b \
+    --threads-per-board 0 \
+    --posts-per-thread 0 \
+    --max-runtime-minutes 480 \
+    --cycles 0 \
+    --cycle-sleep 300 \
+    --save-dir real_pii_collection/data
+
+Скрипт продолжит с checkpoint и пропустит уже скачанные треды.
+
+
+14. Грубые цели по объёму
+-------------------------
+
+Первый этап:
+
+  1-3 ГБ raw
+
+Цель первого этапа:
+
+  понять hit rate PII-кандидатов после LLM-фильтра.
+
+Второй этап, если hit rate нормальный:
+
+  10-20 ГБ raw
+
+Цель eval:
+
+  не гигабайты, а 100-300 вручную подтверждённых реальных примеров PII.
+
+
+15. Ручной отсмотр LLM-кандидатов
+---------------------------------
+
+Открыть ноутбук:
+
+  real_pii_collection/notebooks/review_pii_candidates.ipynb
+
+Он читает кандидатов из:
+
+  real_pii_collection/data/outputs/llm_candidates/*.candidates.jsonl
+
+И хранит решения здесь:
+
+  real_pii_collection/data/outputs/reviewed_candidates/*.review_state.json
+
+Основной workflow в ноутбуке:
+
+  review_loop()
+
+Он показывает батч по 50 кандидатов и ждёт input.
+
+В input надо вводить только индексы хороших кандидатов:
+
+  1 5 9
+
+Можно диапазоны:
+
+  12 15 18-20
+
+Пустой Enter означает: ничего из батча не сохранять и перейти дальше.
+
+Выйти без сдвига cursor:
+
+  q
+
+Откатить cursor:
+
+  back 100
+
+Показать с конкретного индекса:
+
+  show 100
+
+Clean-файл обновляется автоматически после accept()/finish_batch():
+
+  real_pii_collection/data/outputs/reviewed_candidates/*.clean.jsonl
+  real_pii_collection/data/outputs/reviewed_candidates/*.clean.csv
+
+State хранит cursor и принятые индексы:
+
+  real_pii_collection/data/outputs/reviewed_candidates/*.review_state.json
+
+То есть всё, что не было accept() в завершённом батче, просто считается просмотренным мусором
+и не попадает в clean-файл.
