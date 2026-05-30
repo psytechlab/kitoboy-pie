@@ -27,15 +27,23 @@ class TritonRequest(BaseModel):
     inputs: list[InputObject]
 
 
+class EntitySpan(BaseModel):
+    """
+    Represents a detected entity span in the input text.
+
+    start is inclusive, end is exclusive, so text[start:end] must equal the
+    entity text.
+    """
+    start: int
+    end: int
+    label: str
+
+
 class OutputObject(BaseModel):
     """
-    Represents an output object from Triton model inference.
+    Represents an output object from Triton-like model inference.
 
-    Attributes:
-        name (str): Name of the output, defaults to "predicts"
-        datatype (str): Data type of the output, defaults to "BYTES"
-        shape (list[int]): Shape of the output tensor
-        data (list[str]): Output data as list of strings
+    data contains one list of EntitySpan objects for each input text.
     """
     name: str = "predicts"
     datatype: str = "BYTES"

@@ -1,15 +1,24 @@
-def format_combined(preds: list[str]):
-    """
-    Formats a list of predictions into a single string.
+import json
 
-    Args:
-        preds (list[str]): List of string predictions
-
-    Returns:
-        str: Formatted string of predictions joined by semicolons.
-             Returns "NOT_FOUND" if all predictions are empty strings.
+def merge_entities(entity_groups: list[list[dict]]) -> list[dict]:
     """
-    if all(x == "" for x in preds):
-        return "NOT_FOUND"
-    preds = [x for x in preds if x != ""]
-    return ";".join(preds)
+    Merge entity spans returned by several extractors for the same text.
+
+    Exact duplicates are removed, then entities are sorted by span position.
+    """
+    merged = []
+    seen = set()
+
+    for entities in entity_groups:
+        for entity in entities:
+            key = (
+                entity["start"],
+                entity["end"],
+                entity["label"]
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(entity)
+
+    return json.dumps(sorted(merged, key=lambda x: (x["start"], x["end"], x["label"])))
