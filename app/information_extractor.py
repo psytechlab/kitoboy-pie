@@ -52,7 +52,7 @@ class AbstractIE(InterfaceInformationExtractor):
         preds = []
         for text in texts:
             entities = self.make_prediction(text)
-            entities = sorted(entities, key=lambda x: (x["start"], x["end"], x["label"], x["text"]))
+            entities = sorted(entities, key=lambda x: (x["start"], x["end"], x["label"]))
             preds.append(entities)
         return preds
 
@@ -89,7 +89,6 @@ class NavecIE(AbstractIE):
                     "start": start,
                     "end": end,
                     "label": label,
-                    "text": text[start:end],
                 }
             )
 
@@ -124,8 +123,7 @@ class RegexIE(AbstractIE):
                     {
                         "start": match.start(),
                         "end": match.end(),
-                        "label": label,
-                        "text": match.group(0),
+                        "label": label
                     }
                 )
         return found_entities

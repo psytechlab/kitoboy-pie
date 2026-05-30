@@ -1,3 +1,5 @@
+import json
+
 def merge_entities(entity_groups: list[list[dict]]) -> list[dict]:
     """
     Merge entity spans returned by several extractors for the same text.
@@ -12,12 +14,11 @@ def merge_entities(entity_groups: list[list[dict]]) -> list[dict]:
             key = (
                 entity["start"],
                 entity["end"],
-                entity["label"],
-                entity["text"],
+                entity["label"]
             )
             if key in seen:
                 continue
             seen.add(key)
             merged.append(entity)
 
-    return sorted(merged, key=lambda x: (x["start"], x["end"], x["label"], x["text"]))
+    return json.dumps(sorted(merged, key=lambda x: (x["start"], x["end"], x["label"])))

@@ -37,7 +37,6 @@ class EntitySpan(BaseModel):
     start: int
     end: int
     label: str
-    text: str
 
 
 class OutputObject(BaseModel):
@@ -47,9 +46,9 @@ class OutputObject(BaseModel):
     data contains one list of EntitySpan objects for each input text.
     """
     name: str = "predicts"
-    datatype: str = "JSON"
+    datatype: str = "BYTES"
     shape: list[int]
-    data: list[list[EntitySpan]]
+    data: list[str]
 
 
 class TritonResponse(BaseModel):
